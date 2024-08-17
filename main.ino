@@ -15,6 +15,7 @@ void setup() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
   wifi_on(RTW_MODE_PROMISC);
+  wifi_set_channel(44);
   wifi_enter_promisc_mode();
   wifi_set_promisc(RTW_PROMISC_ENABLE_2, promisc_callback, 0);
 }
@@ -23,11 +24,14 @@ void setup() {
 static void promisc_callback(unsigned char *buf, unsigned int len, void* userdata)
 {
   const ieee80211_frame_info_t *frameInfo = (ieee80211_frame_info_t *)userdata;
+  Serial.print("BSSID: ");
   printMac(frameInfo->bssid);
-//  Serial.print("\n");
-  Serial.print("BUF: ");
+  Serial.print(" RSSI: ");
+  Serial.print(frameInfo->rssi);
+  Serial.print(" RAW: ");
   for (int i = 0; i<len/sizeof(buf[0]); i++) Serial.print(buf[i], HEX);
   Serial.print("\n");
+  
 //  //    if(frameInfo->i_addr1[0] == 0xff && frameInfo->i_addr1[1] == 0xff && frameInfo->i_addr1[2] == 0xff && frameInfo->i_addr1[3] == 0xff && frameInfo->i_addr1[4] == 0xff && frameInfo->i_addr1[5] == 0xff)
 //  //        return;
 //  if (frameInfo->rssi == 0)
